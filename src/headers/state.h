@@ -11,6 +11,14 @@
 // TODO: Add a sequence to the state, to store the historic of steps.
 typedef struct {
 } State;
+/**
+ * typedef struct {
+    Board* board;
+    int position;
+    int finished;
+} State;
+ *
+ */
 
 void init_state(State* state, Board* board);
 

@@ -10,6 +10,10 @@
 #define INVALID_BOARD_DIMENSIONS -1
 
 typedef struct {
+    int rows;
+    int columns;
+    Square squares[MAX_COLUMNS*MAX_ROWS];
+
 } Board;
 
 int init_board(Board* board, int rows, int columns);
