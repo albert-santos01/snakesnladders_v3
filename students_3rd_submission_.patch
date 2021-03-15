@@ -1,0 +1,314 @@
+Index: CMakeLists.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- CMakeLists.txt	(revision 785248b928840c89c92bce7f65240a82f6d8f516)
++++ CMakeLists.txt	(revision b6443bcaf0648ed398ac42cd00d10d9597787e26)
+@@ -10,6 +10,7 @@
+         src/sources/utils.c src/headers/utils.h
+         src/sources/square.c src/headers/square.h
+         src/sources/board.c src/headers/board.h
++        src/sources/sequence.c src/headers/sequence.h
+         src/sources/state.c src/headers/state.h
+         src/sources/board_utils.c src/headers/board_utils.h
+         src/sources/game.c src/headers/game.h
+Index: resources/basic.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- resources/basic.txt	(revision 785248b928840c89c92bce7f65240a82f6d8f516)
++++ resources/basic.txt	(revision b6443bcaf0648ed398ac42cd00d10d9597787e26)
+@@ -1,4 +1,4 @@
+ 3x3
+ 2L5
+-4L8
+-8S6
+\ No newline at end of file
++4L7
++6S3
+\ No newline at end of file
+Index: src/headers/game.h
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/headers/game.h	(revision 785248b928840c89c92bce7f65240a82f6d8f516)
++++ src/headers/game.h	(revision b6443bcaf0648ed398ac42cd00d10d9597787e26)
+@@ -4,7 +4,7 @@
+ #include "board.h"
+ 
+ #define THROW_DICE 'T'
+-#define SHOW_SEQUENCE 'P'
++#define SHOW_SEQUENCE 'S'
+ #define QUIT 'Q'
+ 
+ void start_game(Board* board);
+Index: src/headers/sequence.h
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/headers/sequence.h	(revision b6443bcaf0648ed398ac42cd00d10d9597787e26)
++++ src/headers/sequence.h	(revision b6443bcaf0648ed398ac42cd00d10d9597787e26)
+@@ -0,0 +1,19 @@
++#ifndef SEQUENCE_H
++#define SEQUENCE_H
++
++// TODO: Define the attributes of a step having the dice value and the resulting position. Also, it may store the next Step.
++typedef struct _step {
++} Step;
++
++// TODO: Define the attributes of a sequence, being a implementation of a dynamic array or linked list of Steps.
++typedef struct {
++} Sequence;
++
++void init_sequence(Sequence* sequence);
++void add_step_as_first(Sequence* sequence, int position, int dice_value);
++void add_step_as_last(Sequence* sequence, int position, int dice_value);
++int get_sequence_size(Sequence* sequence);
++void clear_sequence(Sequence* sequence);
++void print_sequence(Sequence* sequence);
++
++#endif //SEQUENCE_H
+Index: src/headers/state.h
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/headers/state.h	(revision 785248b928840c89c92bce7f65240a82f6d8f516)
++++ src/headers/state.h	(revision b6443bcaf0648ed398ac42cd00d10d9597787e26)
+@@ -2,8 +2,13 @@
+ #define STATE_H
+ 
+ #include "board.h"
++#include "sequence.h"
+ #include "common.h"
+ 
++#define SNAKE_FOUND 2
++#define LADDER_FOUND 3
++
++// TODO: Add a sequence to the state, to store the historic of steps.
+ typedef struct {
+ } State;
+ 
+@@ -17,6 +22,9 @@
+ 
+ void reset(State* state);
+ 
+-void move(State* state, int dice_value);
++int move(State* state, int dice_value);
++
++void add_step(State* state, int dice_value);
++void print_state_sequence(State* state);
+ 
+ #endif //DUNGEON_STATE_H
+Index: src/sources/game.c
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/sources/game.c	(revision 785248b928840c89c92bce7f65240a82f6d8f516)
++++ src/sources/game.c	(revision b6443bcaf0648ed398ac42cd00d10d9597787e26)
+@@ -13,7 +13,7 @@
+ 
+ char show_game_options() {
+ 
+-    char option = read_char_option("Press T for throwing the dice, Q for quit\n");
++    char option = read_char_option("Press T for throwing the dice, S for showing the history, Q for quit\n");
+     return option;
+ }
+ 
+@@ -75,10 +75,22 @@
+         if (option == THROW_DICE) {
+             int dice_value = throw_dice(FALSE);
+ 
+-            move(&state, dice_value);
++            int move_status = move(&state, dice_value);
++            if (move_status == SNAKE_FOUND) {
++                printf("You found a snake... :(\n");
++
++            } else if (move_status == LADDER_FOUND) {
++                printf("You found a ladder! :D\n");
++            }
++
+             if (is_finished(&state) == TRUE) {
+                 quit = TRUE;
+             }
++            add_step(&state, dice_value);
++
++        } else if (option == SHOW_SEQUENCE) {
++            printf("Steps:\n");
++            print_state_sequence(&state);
+ 
+         } else if (option == QUIT) {
+             quit = TRUE;
+@@ -95,5 +107,52 @@
+     }
+ }
+ 
++Sequence* try_dice_values(State state, int count, int max_depth);
++
++/**
++ * TODO: First, checks if the step count reached the max_depth. If so, returns NULL. If there is room for more steps,
++ * does a move (calling move function which updates the state), checking the result. If the finish square was reached by
++ * this movement, creates a sequence, initializing it. If it doesn't, calls try_dice_values to continue searching. This
++ * call should return the shortest sequence or NULL. Finally, the step should be added to the sequence, if there is one.
++ *
++ * @param state The state to move from.
++ * @param count The number of steps taken already.
++ * @param max_depth The maximum depth allowed.
++ *
++ * Pre:
++ * Post:
++ */
++Sequence* do_recursive_move(State state, int dice_value, int count, int max_depth) {
++    return NULL;
++}
++
++
++/**
++ * TODO: Given a state, checks the sequence of steps following a dice value by calling do_recursive_move with each dice
++ * value. For each resulting sequence, it returns the shortest one.
++ *
++ * @param state The state to move from.
++ * @param count The number of steps taken already.
++ * @param max_depth The maximum depth allowed.
++ *
++ * Pre:
++ * Post:
++ */
++ Sequence* try_dice_values(State state, int count, int max_depth) {
++    return NULL;
++}
++
++
++/**
++ * TODO: Explores the different sequences of dice values that leads to the finish square, printing the best one, if any.
++ * Uses the size of the board to limit the number of steps explored, it is, the board will be considered unsolvable if
++ * no sequence is found under that number of steps.
++ *
++ * @param board The playing board.
++ *
++ * Pre:
++ * Post:
++ */
+ void solve(Board *board) {
++    printf("No solution found! (max depth: %d)", 0);
+ }
+Index: src/sources/sequence.c
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/sources/sequence.c	(revision b6443bcaf0648ed398ac42cd00d10d9597787e26)
++++ src/sources/sequence.c	(revision b6443bcaf0648ed398ac42cd00d10d9597787e26)
+@@ -0,0 +1,61 @@
++#include <stdlib.h>
++#include <stdio.h>
++
++#include "../headers/sequence.h"
++
++/**
++ * TODO: Initializes a sequence, setting the initial values of the structure according to the implementation.
++ *
++ * Pre:
++ * Post:
++ */
++void init_sequence(Sequence* sequence) {
++}
++
++/**
++ * TODO: Adds a step, creating it if needed, as the first step of the sequence.
++ *
++ * Pre:
++ * Post:
++ */
++void add_step_as_first(Sequence* sequence, int position, int dice_value) {
++}
++
++/**
++ * TODO: Adds a step, creating it if needed, as the last step of the sequence.
++ *
++ * Pre:
++ * Post:
++ */
++void add_step_as_last(Sequence* sequence, int position, int dice_value) {
++}
++
++/**
++ * TODO: Returns the number of steps stored in the sequence.
++ *
++ * Pre:
++ * Post:
++ */
++int get_sequence_size(Sequence* sequence) {
++    return 0;
++}
++
++/**
++ * Deletes (freeing if needed) all the steps stored in the sequence.
++ * @param sequence The sequence to be cleared.
++ *
++ * Pre:
++ * Post:
++ */
++ void clear_sequence(Sequence* sequence) {
++}
++
++/**
++ * Prints the sequence of moves leading to the state.
++ * @param sequence The sequence to be shown.
++ *
++ * Pre:
++ * Post:
++ */
++void print_sequence(Sequence* sequence) {
++}
+Index: src/sources/state.c
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/sources/state.c	(revision 785248b928840c89c92bce7f65240a82f6d8f516)
++++ src/sources/state.c	(revision b6443bcaf0648ed398ac42cd00d10d9597787e26)
+@@ -65,8 +65,8 @@
+ 
+ /**
+  * TODO: Moves the player a number of steps in the board, updating the state's current position. If the player ends up in a
+- * square containing a ladder or a snake, prints a message (You found a ladder/snake!) and updates the state's current
+- * position accordingly. Also, sets the state as finished if it moves to or past the last square.
++ * square containing a ladder or a snake updates the state's current position accordingly. Also, sets the state as
++ * finished if it moves to or past the last square. Returns SNAKE_FOUND or LADDER_FOUND if found, SUCCESS otherwise.
+  *
+  * @param board The playing board.
+  * @param state The current state.
+@@ -75,5 +75,26 @@
+  * Pre:
+  * Post:
+  */
+-void move(State* state, int dice_value) {
++int move(State* state, int dice_value) {
++    return ERROR;
++}
++
++/**
++ * TODO: Adds a step to the state's sequence, as the last step of it.
++ *
++ * Pre:
++ * Post:
++ */
++void add_step(State* state, int dice_value) {
++}
++
++
++/**
++ * Prints the sequence of the state.
++ * @param sequence The sequence to be shown.
++ *
++ * Pre:
++ * Post:
++ */
++void print_state_sequence(State* state) {
+ }
