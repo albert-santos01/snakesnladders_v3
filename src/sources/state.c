@@ -90,11 +90,9 @@ int move(State* state, int dice_value) {
     if (current_position<board_size){
         Square* current_square = get_square_at(board,current_position);
         if (is_ladder(current_square)==TRUE){
-            printf("You found a ladder!");
             status = LADDER_FOUND;
-            current_position= get_target_position(current_square);
+            current_position = get_target_position(current_square);
         } else if (is_snake(current_square)==TRUE){
-            printf("You found a snake!");
             status = SNAKE_FOUND;
             current_position= get_target_position(current_square);
         }
@@ -102,6 +100,7 @@ int move(State* state, int dice_value) {
         current_position = board_size - 2;
         set_finished(state, TRUE);
     }
+    set_current_position(state,current_position);
     return status;
 }
 
