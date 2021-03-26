@@ -23,19 +23,20 @@ void init_sequence(Sequence* sequence) {  //Se genera cuando
  */
 void add_step_as_first(Sequence* sequence, int position, int dice_value) { //GENERA SPACE EN LA MEMORIA (MALLOC)
     // TODO buscar donde se implementa
-    /*Step* step = (Step*) malloc(sizeof(step));  //mirar en struct step  GENERAR MEMORIA TIPO STEP
+    Step* step = (Step*) malloc(sizeof(Step));  //mirar en struct step  GENERAR MEMORIA TIPO STEP
     step->position = position;
     step->value = dice_value;
     step->next  = NULL;  //NO HAY NADA EN EL SIGUIENTE
-    if(sequence->first == NULL){
-        sequence->first = step; //step = es la memoria que acabamos de crear (contiene el position y dice_value
+    if(sequence->last == NULL){
+        sequence->last= step;
+         //step = es la memoria que acabamos de crear (contiene el position y dice_value
     }else {
         step->next = sequence->first; //es el primero, el que recien entró ---lo determina la de abajo
     }
     sequence->first = step;
     sequence->size++; //Va incrementando el tamaño
     //FIRST == NULL <---> LAST == STEP
-     */
+
 }
 
 /**
@@ -103,4 +104,9 @@ int get_sequence_size(Sequence* sequence) {
  * Post:
  */
 void print_sequence(Sequence* sequence) {
+    Step* step= sequence->first;
+    while (step!=NULL){
+        printf("With a %d, move to square %d\n",step->value,step->position);
+        step=step->next;
+    }
 }

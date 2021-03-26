@@ -123,10 +123,5 @@ void add_step(State* state, int dice_value) {
  * Post:
  */
 void print_state_sequence(State* state) {
-    Step* step= state->sequence.first;
-    while (step!=NULL){
-        printf("With a %d, move to square %d\n",step->value,step->position);
-        step=step->next;
-    }
-
+   print_sequence(&state->sequence);
 }

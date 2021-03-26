@@ -123,6 +123,12 @@ Sequence* try_dice_values(State state, int count, int max_depth);
  * Post:
  */
 Sequence* do_recursive_move(State state, int dice_value, int count, int max_depth) {
+    if (count>max_depth){
+        return NULL;
+    }
+    move(&state,dice_value);
+
+
     return NULL;
 }
 
@@ -139,6 +145,7 @@ Sequence* do_recursive_move(State state, int dice_value, int count, int max_dept
  * Post:
  */
  Sequence* try_dice_values(State state, int count, int max_depth) {
+
     return NULL;
 }
 
@@ -154,5 +161,14 @@ Sequence* do_recursive_move(State state, int dice_value, int count, int max_dept
  * Post:
  */
 void solve(Board *board) {
-    printf("No solution found! (max depth: %d)", 0);
+    State state ;
+    init_state(&state,board);
+    Sequence *solution= try_dice_values(state,0,get_size(board)); //caso 0
+    if (solution==NULL){
+        printf("No solution found! (max depth: %d)\n", 0); //cuidaaadoo
+    } else{
+        printf("Solution:\n");
+        print_sequence(solution);
+    }
+
 }
