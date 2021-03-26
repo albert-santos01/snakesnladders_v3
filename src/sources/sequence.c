@@ -45,7 +45,7 @@ void add_step_as_first(Sequence* sequence, int position, int dice_value) { //GEN
  * Post:
  */
 void add_step_as_last(Sequence* sequence, int position, int dice_value) { //GENERA SPACE EN LA MEMORIA (MALLOC)
-    Step* step = (Step*) malloc(sizeof(step));  //mirar en struct step  GENERAR MEMORIA TIPO STEP
+    Step* step = (Step*) malloc(sizeof(Step));  //mirar en struct step  GENERAR MEMORIA TIPO STEP
     step->position = position;
     step->value = dice_value;
     step->next  = NULL;  //NO HAY NADA EN EL SIGUIENTE
@@ -70,7 +70,7 @@ void add_step_as_last(Sequence* sequence, int position, int dice_value) { //GENE
  * Post:
  */
 int get_sequence_size(Sequence* sequence) {
-    return 0;
+    return sequence->size;
 }
 
 /**
@@ -78,9 +78,21 @@ int get_sequence_size(Sequence* sequence) {
  * @param sequence The sequence to be cleared.
  *
  * Pre:
- * Post:
+ * Post: Libera todas las steps enlazadas una a una pero NO LIBERA LA SEQUENCE!!!
  */
  void clear_sequence(Sequence* sequence) {
+     Step * step=sequence->first;
+    while (sequence->last!=NULL){
+        if(step!=NULL){
+            sequence->first=step->next;
+            sequence->size--;
+            if (sequence->last==step){
+                sequence->last=NULL;
+            }
+            free(step);
+            step=sequence->first;
+        }
+    }
 }
 
 /**
