@@ -10,15 +10,12 @@
 
 // TODO: Add a sequence to the state, to store the historic of steps.
 typedef struct {
-} State;
-/**
- * typedef struct {
-    Board* board;
-    int position;
+    Board* board;  //Refencia del tablero
+    int position;  //Esta es la posición
     int finished;
+    Sequence sequence; //Añadimo una sequence del dice value y moves
 } State;
- *
- */
+
 
 void init_state(State* state, Board* board);
 

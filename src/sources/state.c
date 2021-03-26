@@ -12,6 +12,10 @@
  * Post:
  */
 void init_state(State* state, Board* board) {
+    state->board=board;
+    state->position=0;
+    state->finished=FALSE;
+    init_sequence(&state->sequence);  //Hemos inicializado sequence
 }
 
 /**
@@ -24,6 +28,7 @@ void init_state(State* state, Board* board) {
  * Post:
  */
 void set_current_position(State* state, int position) {
+    state->position = position;
 }
 
 /**
@@ -36,7 +41,7 @@ void set_current_position(State* state, int position) {
  * Post:
  */
 int get_current_position(State* state) {
-    return ERROR;
+    return state->position;
 }
 
 /**
@@ -49,6 +54,7 @@ int get_current_position(State* state) {
  * Post:
  */
 void set_finished(State* state, int finished) {
+    state->finished = finished;
 }
 
 /**
@@ -60,7 +66,7 @@ void set_finished(State* state, int finished) {
  * Post:
  */
 int is_finished(State* state) {
-    return ERROR;
+    return state->finished;
 }
 
 /**
@@ -76,7 +82,16 @@ int is_finished(State* state) {
  * Post:
  */
 int move(State* state, int dice_value) {
-    return ERROR;
+    //Int status;
+
+    //PARA LA LADDER
+    //status = LADDER_FOUND
+    //current_position = get_target_position(current_square)
+
+    //PARA LA SNAKE
+    //status = SNAKE_FOUND
+    //current_position = get_target_position(current_square)
+    //return status;
 }
 
 /**
@@ -86,6 +101,7 @@ int move(State* state, int dice_value) {
  * Post:
  */
 void add_step(State* state, int dice_value) {
+    add_step_as_last(&state->sequence,state->position,dice_value); //CADA VEZ QUE AGREGAMOS UN PASO LO PONE COMO LAST
 }
 
 

@@ -9,7 +9,10 @@
  * Pre:
  * Post:
  */
-void init_sequence(Sequence* sequence) {
+void init_sequence(Sequence* sequence) {  //Se genera cuando
+    sequence->first = NULL;
+    sequence->last = NULL;
+    sequence->size = 0;
 }
 
 /**
@@ -18,7 +21,21 @@ void init_sequence(Sequence* sequence) {
  * Pre:
  * Post:
  */
-void add_step_as_first(Sequence* sequence, int position, int dice_value) {
+void add_step_as_first(Sequence* sequence, int position, int dice_value) { //GENERA SPACE EN LA MEMORIA (MALLOC)
+    // TODO buscar donde se implementa
+    /*Step* step = (Step*) malloc(sizeof(step));  //mirar en struct step  GENERAR MEMORIA TIPO STEP
+    step->position = position;
+    step->value = dice_value;
+    step->next  = NULL;  //NO HAY NADA EN EL SIGUIENTE
+    if(sequence->first == NULL){
+        sequence->first = step; //step = es la memoria que acabamos de crear (contiene el position y dice_value
+    }else {
+        step->next = sequence->first; //es el primero, el que recien entró ---lo determina la de abajo
+    }
+    sequence->first = step;
+    sequence->size++; //Va incrementando el tamaño
+    //FIRST == NULL <---> LAST == STEP
+     */
 }
 
 /**
@@ -27,7 +44,23 @@ void add_step_as_first(Sequence* sequence, int position, int dice_value) {
  * Pre:
  * Post:
  */
-void add_step_as_last(Sequence* sequence, int position, int dice_value) {
+void add_step_as_last(Sequence* sequence, int position, int dice_value) { //GENERA SPACE EN LA MEMORIA (MALLOC)
+    Step* step = (Step*) malloc(sizeof(step));  //mirar en struct step  GENERAR MEMORIA TIPO STEP
+    step->position = position;
+    step->value = dice_value;
+    step->next  = NULL;  //NO HAY NADA EN EL SIGUIENTE
+    if(sequence->first == NULL){
+        sequence->first = step; //step = es la memoria que acabamos de crear (contiene el position y dice_value
+    }else {
+        sequence->last->next = step; //es el primero, el que recien entró ---lo determina la de abajo
+        //el siguiente ultimo va a ser un step (lo de arriba)
+    }
+    sequence->last = step;
+    sequence->size++; //Va incrementando el tamaño
+    //FIRST == NULL <---> LAST == STEP
+    //NEXT ES NULL PK NO HAY NADA
+    //FIRST == NULL <---> LAST == STEP
+    //ES EL SIGUIENTE CASO CUMPLIENDO QUE SE HAGA EL ADDSTEPASFIRST
 }
 
 /**
