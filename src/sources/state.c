@@ -82,16 +82,27 @@ int is_finished(State* state) {
  * Post:
  */
 int move(State* state, int dice_value) {
-    //Int status;
-
-    //PARA LA LADDER
-    //status = LADDER_FOUND
-    //current_position = get_target_position(current_square)
-
-    //PARA LA SNAKE
-    //status = SNAKE_FOUND
-    //current_position = get_target_position(current_square)
-    //return status;
+    int status;
+    Board* board=state->board; // this is the address
+    int board_size= get_size(board);
+    int current_position= get_current_position(state);
+    current_position+= dice_value;
+    if (current_position<board_size){
+        Square* current_square = get_square_at(board,current_position);
+        if (is_ladder(current_square)==TRUE){
+            printf("You found a ladder!");
+            status = LADDER_FOUND;
+            current_position= get_target_position(current_square);
+        } else if (is_snake(current_square)==TRUE){
+            printf("You found a snake!");
+            status = SNAKE_FOUND;
+            current_position= get_target_position(current_square);
+        }
+    } else if(current_position>board_size-2) {//ESTO ES QUE HA GANADO SIN CONTAR EL REBOTE
+        current_position = board_size - 2;
+        set_finished(state, TRUE);
+    }
+    return status;
 }
 
 /**
