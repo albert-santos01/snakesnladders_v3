@@ -123,13 +123,26 @@ Sequence* try_dice_values(State state, int count, int max_depth);
  * Post:
  */
 Sequence* do_recursive_move(State state, int dice_value, int count, int max_depth) {
-    if (count>max_depth){
+    count++;
+    if (count>=max_depth){
         return NULL;
+    }else{
+        move(&state,dice_value);
+        if (state.finished==TRUE){
+            Sequence * solution= (Sequence*) malloc(sizeof(Sequence));
+            init_sequence(solution);
+            add_step_as_first(solution,state.position,dice_value);
+            return solution;
+        } else {
+            Sequence * possible= try_dice_values(state,count,max_depth); //cuiddaaaasoooo
+            if ( possible !=NULL){
+                add_step_as_first(possible,state.position,dice_value);
+                return possible;
+            } else{
+                return NULL;
+            }
+        }
     }
-    move(&state,dice_value);
-
-
-    return NULL;
 }
 
 
@@ -145,8 +158,27 @@ Sequence* do_recursive_move(State state, int dice_value, int count, int max_dept
  * Post:
  */
  Sequence* try_dice_values(State state, int count, int max_depth) {
+    int idx=6;
+    int max_steps=max_depth;
+    Sequence * best_solution;
+    Sequence * solution;
 
-    return NULL;
+    while (idx>0){
+
+        solution= do_recursive_move(state,idx,count,max_steps);
+
+        if (solution->size  <  max_steps){
+            max_steps=solution->size;
+            best_solution= solution;
+
+            clear_sequence(solution);
+            free(solution);
+
+
+        }
+        idx--;
+    }
+    return best_solution;
 }
 
 
@@ -163,12 +195,13 @@ Sequence* do_recursive_move(State state, int dice_value, int count, int max_dept
 void solve(Board *board) {
     State state ;
     init_state(&state,board);
+
     Sequence *solution= try_dice_values(state,0,get_size(board)); //caso 0
     if (solution==NULL){
         printf("No solution found! (max depth: %d)\n", 0); //cuidaaadoo
     } else{
         printf("Solution:\n");
         print_sequence(solution);
-    }
+    } //TODO: free(solution)?????????????????????
 
 }
