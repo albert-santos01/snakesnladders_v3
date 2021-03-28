@@ -98,8 +98,8 @@ int move(State* state, int dice_value) {
             status = SNAKE_FOUND;
             current_position= get_target_position(current_square);
         }
-    } else if(current_position>board_size-1) {//ESTO ES QUE HA GANADO SIN CONTAR EL REBOTE
-        current_position = board_size - 1;
+    } else if(current_position>board_size-1) {
+        current_position = board_size - 1; //PARA POSICIONARLO EN EL ÚTLTMO SQUARE
         set_finished(state, TRUE);
     }
     set_current_position(state,current_position);
