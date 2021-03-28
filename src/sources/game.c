@@ -110,7 +110,7 @@ void start_game(Board *board) {
 Sequence* try_dice_values(State state, int count, int max_depth);
 
 /**
- * TODO: First, checks if the step count reached the max_depth. If so, returns NULL. If there is room for more steps,
+ *  First, checks if the step count reached the max_depth. If so, returns NULL. If there is room for more steps,
  * does a move (calling move function which updates the state), checking the result. If the finish square was reached by
  * this movement, creates a sequence, initializing it. If it doesn't, calls try_dice_values to continue searching. This
  * call should return the shortest sequence or NULL. Finally, the step should be added to the sequence, if there is one.
@@ -119,8 +119,9 @@ Sequence* try_dice_values(State state, int count, int max_depth);
  * @param count The number of steps taken already.
  * @param max_depth The maximum depth allowed.
  *
- * Pre:
- * Post:
+ * Pre: el state debe estar inicializado, el max_depth debe ser como mínimo 1 y el dice value es recomendable que sea entre 6 y 1, el count debe ser positivo
+ * Post: Si el count  es mas grande que max_depth devuelve NULL, sino acabará creando una sequencia dinámicamente que resultará ser la solución mas corta
+ *      que será devuelta
  */
 Sequence* do_recursive_move(State state, int dice_value, int count, int max_depth) {
 
@@ -135,7 +136,7 @@ Sequence* do_recursive_move(State state, int dice_value, int count, int max_dept
             add_step_as_first(solution,state.position,dice_value);
             return solution;
         } else {
-            Sequence * possible= try_dice_values(state,count+1,max_depth); //cuiddaaaasoooo
+            Sequence * possible= try_dice_values(state,count+1,max_depth);
             if ( possible !=NULL){
                 add_step_as_first(possible,state.position,dice_value);
                 return possible;
@@ -148,15 +149,15 @@ Sequence* do_recursive_move(State state, int dice_value, int count, int max_dept
 
 
 /**
- * TODO: Given a state, checks the sequence of steps following a dice value by calling do_recursive_move with each dice
+ * Given a state, checks the sequence of steps following a dice value by calling do_recursive_move with each dice
  * value. For each resulting sequence, it returns the shortest one.
  *
  * @param state The state to move from.
  * @param count The number of steps taken already.
  * @param max_depth The maximum depth allowed.
  *
- * Pre:
- * Post:
+ * Pre: el state debe estar inicializado, count tendria que no ser negaativo,  y el max_depth debe ser como mínimo 1
+ * Post: De vuelve la sequence mas corta
  */
  Sequence* try_dice_values(State state, int count, int max_depth) {
     int idx=1;
@@ -169,13 +170,14 @@ Sequence* do_recursive_move(State state, int dice_value, int count, int max_dept
 
     while (idx<=6){
 
-        solution= do_recursive_move(state,idx,count,max_depth);   //si retorna piensa
+        solution= do_recursive_move(state,idx,count,max_depth);
         if (solution!= NULL){
             steps = get_sequence_size(solution);
             if (steps < min_steps) {
                 min_steps = steps;
                 old = best_solution;
-                best_solution = solution;  //que se haga con cada solución
+                best_solution = solution;
+
                 if(old != NULL) {
                     clear_sequence(old);
                     free(old);
@@ -189,14 +191,14 @@ Sequence* do_recursive_move(State state, int dice_value, int count, int max_dept
 
 
 /**
- * TODO: Explores the different sequences of dice values that leads to the finish square, printing the best one, if any.
+ *  Explores the different sequences of dice values that leads to the finish square, printing the best one, if any.
  * Uses the size of the board to limit the number of steps explored, it is, the board will be considered unsolvable if
  * no sequence is found under that number of steps.
  *
  * @param board The playing board.
  *
- * Pre:
- * Post:
+ * Pre: EL board debe estar  inicializado
+ * Post:  Imprime la solucioón mas corta si la hay
  */
 void solve(Board *board) {
     State state ;
@@ -204,12 +206,12 @@ void solve(Board *board) {
 
     Sequence *solution= try_dice_values(state,0,get_size(board)); //caso 0
     if (solution==NULL){
-        printf("No solution found! (max depth: %d)\n", 0); //cuidaaadoo
+        printf("No solution found! \n");
     } else{
         printf("Solution:\n");
         print_sequence(solution);
         clear_sequence(solution);
         free(solution);
-    } //TODO: free(solution)?????????????????????
+    }
 
 }
