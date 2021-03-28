@@ -123,13 +123,14 @@ Sequence* try_dice_values(State state, int count, int max_depth);
  * Post:
  */
 Sequence* do_recursive_move(State state, int dice_value, int count, int max_depth) {
-    count++;
+
     if (count>=max_depth){
         return NULL;
     }else{
         move(&state,dice_value);
         if (state.finished==TRUE){
             Sequence * solution= (Sequence*) malloc(sizeof(Sequence));
+
             init_sequence(solution);
             add_step_as_first(solution,state.position,dice_value);
             return solution;
@@ -159,20 +160,25 @@ Sequence* do_recursive_move(State state, int dice_value, int count, int max_dept
  */
  Sequence* try_dice_values(State state, int count, int max_depth) {
     int idx=6;
+    count++;
     int max_steps=max_depth;
-    Sequence * best_solution;
-    Sequence * solution;
+    Sequence * best_solution=NULL;
+    Sequence * solution=NULL;
 
     while (idx>0){
 
-        solution= do_recursive_move(state,idx,count,max_steps);
+        solution= do_recursive_move(state,idx,count,max_steps);   //si retorna piensa
+        if (solution!= NULL){
+            if (count < max_steps) {
+                if (solution->size == 1) {
+                    max_steps = count;
+                }
+                best_solution = solution;  //que se haga con cada solución
+                //clear_sequence(solution);
+                //free(solution);
+            }
 
-        if (solution->size  <  max_steps){
-            max_steps=solution->size;
-            best_solution= solution;
 
-            clear_sequence(solution);
-            free(solution);
 
 
         }
