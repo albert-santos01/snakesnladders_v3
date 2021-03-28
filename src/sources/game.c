@@ -160,6 +160,7 @@ Sequence* do_recursive_move(State state, int dice_value, int count, int max_dept
  */
  Sequence* try_dice_values(State state, int count, int max_depth) {
     int idx=1;
+    count++;
     int steps;
     int min_steps = max_depth;
     Sequence * best_solution=NULL;
