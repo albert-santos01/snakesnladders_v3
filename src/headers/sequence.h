@@ -1,14 +1,14 @@
 #ifndef SEQUENCE_H
 #define SEQUENCE_H
 
-// TODO: Define the attributes of a step having the dice value and the resulting position. Also, it may store the next Step.
+
 typedef struct _step {
     int position;   //user position
     int value; //dice value
     struct _step* next;
 } Step;
 
-// TODO: Define the attributes of a sequence, being a implementation of a dynamic array or linked list of Steps.
+
 typedef struct {
     Step* first;
     Step* last;       //LINKED LIST

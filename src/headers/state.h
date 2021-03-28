@@ -8,7 +8,7 @@
 #define SNAKE_FOUND 2
 #define LADDER_FOUND 3
 
-// TODO: Add a sequence to the state, to store the historic of steps.
+
 typedef struct {
     Board* board;  //Refencia del tablero
     int position;  //Esta es la posición
