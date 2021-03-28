@@ -10,7 +10,7 @@
  * @return SUCCESS code if the initialization was successful, ERROR code if rows are less than 1 or more than MAX_ROWS
  * or if columns is less than 2 or more than MAX_COLUMNS.
  *
- * Pre: -----------
+ * Pre: Las rows y las columnas deben ser positivas.
  * Post: Función que inicializa el tablero y te devuelve SUCCESS o ERROR en función de si se ha hecho correctamente o no.
  */
 int init_board(Board* board, int rows, int columns) {
@@ -39,11 +39,10 @@ int init_board(Board* board, int rows, int columns) {
  * @param board The board to be queried.
  * @return The number of rows of the board.
  *
- * Pre:---------------
+ * Pre:El board debe haber sido asignado con naturales mayores a 0 en el columns y rows previamente.
  * Post: La función te devuelve las filas del tablero dado
  */
 int get_rows(Board* board) {
-
     return board->rows;
 }
 
@@ -51,7 +50,7 @@ int get_rows(Board* board) {
  * Sets the number of rows of the board.
  * @param board The board to be queried.
  *
- * Pre:-----------
+ * Pre:El board debe haber sido asignado con naturales mayores a 0 en el columns y rows previamente.
  * Post: La funcion asigna las filas del tablero con el entero recibido.
  */
 void set_rows(Board* board, int rows) {
@@ -63,7 +62,7 @@ void set_rows(Board* board, int rows) {
  * @param board The board to be queried.
  * @return The number of columns of the board.
  *
- * Pre: ---------------------
+ * Pre: El board debe haber sido asignado con naturales mayores a 0 en el columns y rows previamente.
  * Post: La función te devuelve las columnas del tablero.
  */
 int get_columns(Board* board) {
@@ -74,7 +73,7 @@ int get_columns(Board* board) {
  *  Sets the number of columns of the board.
  * @param board The board to be queried.
  *
- * Pre: -----------------
+ * Pre: El board debe haber sido asignado con naturales mayores a 0 en el columns y rows previamente.
  * Post: La funcion asigna  las columnas del tablero con el entero recibido
  */
 void set_columns(Board* board, int columns) {
@@ -86,7 +85,7 @@ void set_columns(Board* board, int columns) {
  * @param board The board to be queried.
  * @return The size of the board.
  *
- * Pre: El board debe haber sido asignado con enteros en el columns y rows previamente.
+ * Pre: El board debe haber sido asignado con naturales mayores a 0 en el columns y rows previamente.
  * Post: La función te devuelve el tamaño total del tablero en filas * columnas.
  */
 int get_size(Board* board) {
@@ -100,8 +99,8 @@ int get_size(Board* board) {
  * @param position The position of the square.
  * @return The (reference to the) square of the board corresponding to the position if valid, NULL otherwise.
  *
- * Pre: El board debe haber sido asignada con enteros en el columns y rows previamente.
- * Post: La función retornará la referéncia del square con su dicha posición, de lo contrario, retornará NULL.
+ * Pre: El board debe haber sido asignada con naturales mayores a 0 en el columns y rows previamente.
+ * Post: La función retornará la referéncia del square, de lo contrario, retornará NULL.
  */
 Square* get_square_at(Board *board, int position) {
     if (position>=0 && position<get_size(board)){

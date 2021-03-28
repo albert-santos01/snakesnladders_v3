@@ -310,12 +310,11 @@ int read_square_line(Board* board, FILE* fd) {
         if (status==SUCCESS){
             Square* square=get_square_at(board,position);
             set_target_position(square,target);
-
-
-
         } else{
-            status=INVALID_SQUARE_TARGET;
+            status=INVALID_SQUARE_LINE;
         }
+    }else{
+        status = INVALID_SQUARE_DATA;
     }
 
     return status;
@@ -351,6 +350,7 @@ int read_board_file(Board* board, FILE* fd) {
             status=read_square_line(board,fd);
             if (status!=SUCCESS){
                 printf("Invalid square line format at line %d, error type: %d\n",counter,status);
+                status = INVALID_SQUARE_LINE;
             }
             counter++;
 
