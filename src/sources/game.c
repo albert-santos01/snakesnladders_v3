@@ -135,7 +135,7 @@ Sequence* do_recursive_move(State state, int dice_value, int count, int max_dept
             add_step_as_first(solution,state.position,dice_value);
             return solution;
         } else {
-            Sequence * possible= try_dice_values(state,count,max_depth); //cuiddaaaasoooo
+            Sequence * possible= try_dice_values(state,count+1,max_depth); //cuiddaaaasoooo
             if ( possible !=NULL){
                 add_step_as_first(possible,state.position,dice_value);
                 return possible;
@@ -159,30 +159,29 @@ Sequence* do_recursive_move(State state, int dice_value, int count, int max_dept
  * Post:
  */
  Sequence* try_dice_values(State state, int count, int max_depth) {
-    int idx=6;
-    count++;
-    int max_steps=max_depth;
+    int idx=1;
+    int steps;
+    int min_steps = max_depth;
     Sequence * best_solution=NULL;
     Sequence * solution=NULL;
+    Sequence* old;
 
-    while (idx>0){
+    while (idx<=6){
 
-        solution= do_recursive_move(state,idx,count,max_steps);   //si retorna piensa
+        solution= do_recursive_move(state,idx,count,max_depth);   //si retorna piensa
         if (solution!= NULL){
-            if (count < max_steps) {
-                if (solution->size == 1) {
-                    max_steps = count;
-                }
+            steps = get_sequence_size(solution);
+            if (steps < min_steps) {
+                min_steps = steps;
+                old = best_solution;
                 best_solution = solution;  //que se haga con cada solución
-                //clear_sequence(solution);
-                //free(solution);
+                if(old != NULL) {
+                    clear_sequence(old);
+                    free(old);
+                }
             }
-
-
-
-
         }
-        idx--;
+        idx++;
     }
     return best_solution;
 }
@@ -208,6 +207,8 @@ void solve(Board *board) {
     } else{
         printf("Solution:\n");
         print_sequence(solution);
+        clear_sequence(solution);
+        free(solution);
     } //TODO: free(solution)?????????????????????
 
 }
